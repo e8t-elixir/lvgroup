@@ -3,6 +3,8 @@ defmodule App.AccountsFixtures do
   This module defines test helpers for creating
   entities via the `App.Accounts` context.
   """
+  alias App.Accounts.{User, UserToken}
+  alias App.Repo
 
   def unique_user_email, do: "user#{System.unique_integer()}@example.com"
   def valid_user_password, do: "hello world!"
@@ -10,16 +12,19 @@ defmodule App.AccountsFixtures do
   def valid_user_attributes(attrs \\ %{}) do
     Enum.into(attrs, %{
       email: unique_user_email(),
-      password: valid_user_password()
+      password: valid_user_password(),
+      password_confirmation: valid_user_password()
     })
   end
 
-  def user_fixture(attrs \\ %{}) do
+  def user_fixture(attrs \\ %{}, opts \\ []) do
+    # (attrs, [confirmed: true])
     {:ok, user} =
       attrs
       |> valid_user_attributes()
       |> App.Accounts.register_user()
 
+    if Keyword.get(opts, :confirmed, true), do: Repo.transaction(confirm_user_multi(user))
     user
   end
 
@@ -27,5 +32,11 @@ defmodule App.AccountsFixtures do
     {:ok, captured_email} = fun.(&"[TOKEN]#{&1}[TOKEN]")
     [_, token | _] = String.split(captured_email.text_body, "[TOKEN]")
     token
+  end
+
+  defp confirm_user_multi(user) do
+    Ecto.Multi.new()
+    |> Ecto.Multi.update(:user, User.confirm_changeset(user))
+    |> Ecto.Multi.delete_all(:tokens, UserToken.user_and_contexts_query(user, ["confirm"]))
   end
 end

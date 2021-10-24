@@ -66,19 +66,23 @@ defmodule App.AccountsTest do
 
     test "validates email and password when given" do
       {:error, changeset} =
-        Accounts.register_user(%{email: "not valid", password: "invalid"})
+        Accounts.register_user(%{
+          email: "not valid",
+          password: "invalid",
+          password_confirmation: "not match"
+        })
 
       assert %{
                email: ["must have the @ sign and no spaces"],
-               password: ["should be at least 8 character(s)"]
+               password: ["should be at least 8 character(s)"],
+               password_confirmation: ["does not match password"]
              } = errors_on(changeset)
     end
 
     test "validates maximum values for email and password for security" do
       too_long = String.duplicate("db", 100)
 
-      {:error, changeset} =
-        Accounts.register_user(%{email: too_long, password: too_long})
+      {:error, changeset} = Accounts.register_user(%{email: too_long, password: too_long})
 
       assert "should be at most 160 character(s)" in errors_on(changeset).email
       assert "should be at most 32 character(s)" in errors_on(changeset).password
@@ -179,8 +183,7 @@ defmodule App.AccountsTest do
     test "applies the email without persisting it", %{user: user} do
       email = unique_user_email()
 
-      {:ok, user} =
-        Accounts.apply_user_email(user, valid_user_password(), %{email: email})
+      {:ok, user} = Accounts.apply_user_email(user, valid_user_password(), %{email: email})
 
       assert user.email == email
       assert Accounts.get_user!(user.id).email != email
@@ -408,7 +411,7 @@ defmodule App.AccountsTest do
 
   describe "confirm_user/1" do
     setup do
-      user = user_fixture()
+      user = user_fixture(%{}, confirmed: false)
 
       token =
         extract_user_token(fn url ->
@@ -513,8 +516,7 @@ defmodule App.AccountsTest do
     end
 
     test "updates the password", %{user: user} do
-      {:ok, updated_user} =
-        Accounts.reset_user_password(user, %{password: "new valid password"})
+      {:ok, updated_user} = Accounts.reset_user_password(user, %{password: "new valid password"})
 
       assert is_nil(updated_user.password)
       assert Accounts.get_user_by_email_and_password(user.email, "new valid password")

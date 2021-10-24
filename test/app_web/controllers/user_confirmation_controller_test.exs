@@ -6,7 +6,7 @@ defmodule AppWeb.UserConfirmationControllerTest do
   import App.AccountsFixtures
 
   setup do
-    %{user: user_fixture()}
+    %{user: user_fixture(%{}, confirmed: false)}
   end
 
   describe "GET /users/confirm" do

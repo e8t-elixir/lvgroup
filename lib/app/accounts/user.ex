@@ -31,6 +31,7 @@ defmodule App.Accounts.User do
   def registration_changeset(user, attrs, opts \\ []) do
     user
     |> cast(attrs, [:email, :password])
+    |> validate_confirmation(:password, message: "does not match password")
     |> validate_email()
     |> validate_password(opts)
   end
@@ -38,9 +39,7 @@ defmodule App.Accounts.User do
   defp validate_email(changeset) do
     changeset
     |> validate_required([:email])
-    |> validate_format(:email, ~r/^[^\s]+@[^\s]+$/,
-      message: "must have the @ sign and no spaces"
-    )
+    |> validate_format(:email, ~r/^[^\s]+@[^\s]+$/, message: "must have the @ sign and no spaces")
     |> validate_length(:email, max: 160)
     |> unsafe_validate_unique(:email, App.Repo)
     |> unique_constraint(:email)
@@ -140,4 +139,9 @@ defmodule App.Accounts.User do
       add_error(changeset, :current_password, "is not valid")
     end
   end
+
+  @doc """
+  confirm user
+  """
+  def is_confirmed?(user), do: user.confirmed_at != nil
 end
