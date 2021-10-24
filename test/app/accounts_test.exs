@@ -19,21 +19,32 @@ defmodule App.AccountsTest do
 
   describe "get_user_by_email_and_password/2" do
     test "does not return the user if the email does not exist" do
-      refute Accounts.get_user_by_email_and_password(
-               "unknown@example.com",
-               "hello world!"
-             )
+      # refute Accounts.get_user_by_email_and_password(
+      #          "unknown@example.com",
+      #          "hello world!"
+      #        )
+      assert {:error, :bad_username_or_password} ==
+               Accounts.get_user_by_email_and_password("unknown@example.com", "hello world!")
     end
 
     test "does not return the user if the password is not valid" do
       user = user_fixture()
-      refute Accounts.get_user_by_email_and_password(user.email, "invalid")
+      # refute Accounts.get_user_by_email_and_password(user.email, "invalid")
+      assert {:error, :bad_username_or_password} ==
+               Accounts.get_user_by_email_and_password(user.email, "invalid")
+    end
+
+    test "does not return the user if the email is not confirmed" do
+      user = user_fixture(%{}, confirmed: false)
+      # refute Accounts.get_user_by_email_and_password(user.email, valid_user_password())
+      assert {:error, :not_confirmed} ==
+               Accounts.get_user_by_email_and_password(user.email, valid_user_password())
     end
 
     test "returns the user if the email and password are valid" do
       %{id: id} = user = user_fixture()
 
-      assert %User{id: ^id} =
+      assert {:ok, %User{id: ^id}} =
                Accounts.get_user_by_email_and_password(
                  user.email,
                  valid_user_password()
