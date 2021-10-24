@@ -15,14 +15,29 @@ config :app, App.Repo,
 config :app, AppWeb.Endpoint,
   # Binding to loopback ipv4 address prevents access from other machines.
   # Change to `ip: {0, 0, 0, 0}` to allow access from other machines.
-  http: [ip: {127, 0, 0, 1}, port: 4000],
+  # http: [ip: {127, 0, 0, 1}, port: 4000],
+  http: [ip: {0, 0, 0, 0}, port: (System.get_env("PORT") || "4000") |> String.to_integer()],
   check_origin: false,
   code_reloader: true,
   debug_errors: true,
   secret_key_base: "JjUQiLdNm9cqx7gwRRZK+NNwpaJFLode2lN4bU0Mn4WtCVLDYZb4g7yioMkqtsYq",
   watchers: [
     # Start the esbuild watcher by calling Esbuild.install_and_run(:default, args)
-    esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]}
+    esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]},
+    yarn: [
+      "tailwindcss",
+      "--postcss",
+      "--input=_css/tailwind.css",
+      "--output=css/tailwind.css",
+      cd: Path.expand("../assets", __DIR__)
+    ],
+    yarn: [
+      "sass",
+      "-q",
+      "css/custom/index.scss:css/custom.css",
+      "_css/icons.scss:css/icons.css",
+      cd: Path.expand("../assets", __DIR__)
+    ]
   ]
 
 # ## SSL Support

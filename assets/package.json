@@ -1,0 +1,19 @@
+{
+  "scripts": {
+    "build:tw": "tailwind -p -i _css/tailwind.css -o css/tailwind.css",
+    "build:sass": "sass css/custom/index.scss:css/custom.css _css/icons.scss:css/icons.css",
+    "build:css": "yarn build:tw && yarn build:sass"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.15.3",
+    "alpinejs": "^3.2.2"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.2.0",
+    "postcss": "^8.3.5",
+    "postcss-import": "^14.0.2",
+    "sass": "^1.35.2",
+    "tailwindcss": "^2.2.4"
+  }
+}
