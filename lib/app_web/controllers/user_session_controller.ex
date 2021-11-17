@@ -29,10 +29,13 @@ defmodule AppWeb.UserSessionController do
         # TODO: check whether confirmation url expired
         Accounts.deliver_user_confirmation_instructions(
           user,
-          &Routes.user_confirmation_url(conn, :confirm, &1)
+          &Routes.user_confirmation_url(conn, :edit, &1)
         )
 
-        render(conn, "new.html", error_message: "Please confirm your email before signin")
+        render(conn, "new.html",
+          error_message:
+            "Please confirm your email before signing in. An email confirmation link has been sent to you."
+        )
     end
   end
 
