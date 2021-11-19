@@ -2,6 +2,7 @@ defmodule AppWeb.UserSessionControllerTest do
   use AppWeb.ConnCase
 
   import App.AccountsFixtures
+  alias App.Accounts
 
   setup do
     %{user: user_fixture()}
@@ -96,6 +97,25 @@ defmodule AppWeb.UserSessionControllerTest do
 
       assert response =~
                "Please confirm your email before signing in. An email confirmation link has been sent to you."
+    end
+
+    test "emits error message when account is blocked", %{conn: conn} do
+      {:ok, user} =
+        user_fixture()
+        |> Accounts.block_user()
+
+      conn =
+        post(conn, Routes.user_session_path(conn, :create), %{
+          "user" => %{
+            "email" => user.email,
+            "password" => valid_user_password(),
+            "remember_me" => "true"
+          }
+        })
+
+      response = html_response(conn, 200)
+      assert response =~ "<h1>Log in</h1>"
+      assert response =~ "Your account has been locked, please contact an administrator."
     end
   end
 

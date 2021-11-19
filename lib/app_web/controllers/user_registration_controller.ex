@@ -3,7 +3,7 @@ defmodule AppWeb.UserRegistrationController do
 
   alias App.Accounts
   alias App.Accounts.User
-  alias AppWeb.UserAuth
+  # alias AppWeb.UserAuth
 
   def new(conn, _params) do
     changeset = Accounts.change_user_registration(%User{})

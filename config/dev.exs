@@ -2,9 +2,15 @@ import Config
 
 # Configure your database
 config :app, App.Repo,
-  database: Path.expand("../app_dev.db", Path.dirname(__ENV__.file)),
-  pool_size: 5,
-  show_sensitive_data_on_connection_error: true
+  # database: Path.expand("../app_dev.db", Path.dirname(__ENV__.file)),
+  # pool_size: 5,
+  # show_sensitive_data_on_connection_error: true
+  username: "dev",
+  password: "xubuntudb",
+  database: "groups_dev",
+  hostname: "localhost",
+  show_sensitive_data_on_connection_error: true,
+  pool_size: 10
 
 # For development, we disable any cache and enable
 # debugging and code reloading.
@@ -39,6 +45,41 @@ config :app, AppWeb.Endpoint,
       cd: Path.expand("../assets", __DIR__)
     ]
   ]
+
+# Configures the mailer
+# Host:
+# smtp.mailtrap.io
+# Port:
+# 25 or 465 or 587 or 2525
+# Username:
+# c7cf0277efd293
+# Password:
+# 9ef4cc4b393eec
+# Auth:
+# PLAIN, LOGIN and CRAM-MD5
+# TLS:
+# Optional (STARTTLS on all ports)
+# config :app, App.Mailer, adapter: Swoosh.Adapters.Local
+config :app, App.Mailer,
+  adapter: Swoosh.Adapters.SMTP,
+  relay: "smtp.mailtrap.io",
+  username: "c7cf0277efd293",
+  password: "9ef4cc4b393eec",
+  # ssl: true,
+  # tls: :always,
+  tls: :never,
+  auth: :always,
+  port: 2525,
+  # dkim: [
+  #   s: "default",
+  #   d: "domain.com",
+  #   private_key: {:pem_plain, File.read!("priv/keys/domain.private")}
+  # ],
+  retries: 2,
+  no_mx_lookups: false
+
+# Swoosh API client is needed for adapters other than SMTP.
+config :swoosh, :api_client, false
 
 # ## SSL Support
 #

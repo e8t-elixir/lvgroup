@@ -33,6 +33,7 @@ defmodule App.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:postgrex, ">= 0.0.0"},
       {:bcrypt_elixir, "~> 2.0"},
       {:phoenix, "~> 1.6.2"},
       {:phoenix_ecto, "~> 4.4"},
@@ -45,6 +46,7 @@ defmodule App.MixProject do
       {:phoenix_live_dashboard, "~> 0.5"},
       {:esbuild, "~> 0.2", runtime: Mix.env() == :dev},
       {:swoosh, "~> 1.3"},
+      {:gen_smtp, "~> 1.1"},
       {:telemetry_metrics, "~> 0.6"},
       {:telemetry_poller, "~> 1.0"},
       {:gettext, "~> 0.18"},
