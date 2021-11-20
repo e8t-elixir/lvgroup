@@ -18,7 +18,9 @@ defmodule App.Timeline do
 
   """
   def list_tweets do
-    Repo.all(Tweet)
+    # Repo.all(Tweet)
+    Tweet |> order_by(desc: :inserted_at) |> Repo.all()
+    # (from t in Tweet, order_by: [desc: t.id]) |> Repo.all()
   end
 
   @doc """
@@ -53,6 +55,7 @@ defmodule App.Timeline do
     %Tweet{}
     |> Tweet.changeset(attrs)
     |> Repo.insert()
+    |> broadcast(:tweet_created)
   end
 
   @doc """
@@ -71,6 +74,24 @@ defmodule App.Timeline do
     tweet
     |> Tweet.changeset(attrs)
     |> Repo.update()
+    |> broadcast(:tweet_updated)
+  end
+
+  def inc_like(%Tweet{id: id}) do
+    # update_all 返回值第一个参数是修改行数，第二个是更新后的值。第二个默认为 nil，当query中有 select 才返回值 有的数据库不支持该操作
+    {1, [tweet]} =
+      from(t in Tweet, where: t.id == ^id, select: t)
+      |> Repo.update_all(inc: [like_count: 1])
+
+    broadcast({:ok, tweet}, :tweet_updated)
+  end
+
+  def inc_retweet(%Tweet{id: id}) do
+    {1, [tweet]} =
+      from(t in Tweet, where: t.id == ^id, select: t)
+      |> Repo.update_all(inc: [retweet_count: 1])
+
+    broadcast({:ok, tweet}, :tweet_updated)
   end
 
   @doc """
@@ -100,5 +121,16 @@ defmodule App.Timeline do
   """
   def change_tweet(%Tweet{} = tweet, attrs \\ %{}) do
     Tweet.changeset(tweet, attrs)
+  end
+
+  def subscribe do
+    Phoenix.PubSub.subscribe(App.PubSub, "tweets")
+  end
+
+  defp broadcast({:error, _reason} = error, _event), do: error
+
+  defp broadcast({:ok, tweet}, event) do
+    Phoenix.PubSub.broadcast(App.PubSub, "tweets", {event, tweet})
+    {:ok, tweet}
   end
 end

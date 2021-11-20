@@ -6,7 +6,7 @@ defmodule App.Repo.Migrations.CreateTweets do
       add :username, :string
       add :content, :string
       add :like_count, :integer
-      add :repost_count, :integer
+      add :retweet_count, :integer
 
       timestamps()
     end

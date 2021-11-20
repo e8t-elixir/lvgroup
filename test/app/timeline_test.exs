@@ -8,7 +8,7 @@ defmodule App.TimelineTest do
 
     import App.TimelineFixtures
 
-    @invalid_attrs %{content: nil, like_count: nil, repost_count: nil, username: nil}
+    @invalid_attrs %{content: nil, like_count: nil, retweet_count: nil, username: nil}
 
     test "list_tweets/0 returns all tweets" do
       tweet = tweet_fixture()
@@ -21,12 +21,12 @@ defmodule App.TimelineTest do
     end
 
     test "create_tweet/1 with valid data creates a tweet" do
-      valid_attrs = %{content: "some content", like_count: 42, repost_count: 42, username: "some username"}
+      valid_attrs = %{content: "some content", like_count: 42, retweet_count: 42, username: "some username"}
 
       assert {:ok, %Tweet{} = tweet} = Timeline.create_tweet(valid_attrs)
       assert tweet.content == "some content"
       assert tweet.like_count == 42
-      assert tweet.repost_count == 42
+      assert tweet.retweet_count == 42
       assert tweet.username == "some username"
     end
 
@@ -36,12 +36,12 @@ defmodule App.TimelineTest do
 
     test "update_tweet/2 with valid data updates the tweet" do
       tweet = tweet_fixture()
-      update_attrs = %{content: "some updated content", like_count: 43, repost_count: 43, username: "some updated username"}
+      update_attrs = %{content: "some updated content", like_count: 43, retweet_count: 43, username: "some updated username"}
 
       assert {:ok, %Tweet{} = tweet} = Timeline.update_tweet(tweet, update_attrs)
       assert tweet.content == "some updated content"
       assert tweet.like_count == 43
-      assert tweet.repost_count == 43
+      assert tweet.retweet_count == 43
       assert tweet.username == "some updated username"
     end
 

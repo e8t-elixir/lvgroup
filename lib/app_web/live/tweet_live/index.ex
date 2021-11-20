@@ -6,7 +6,10 @@ defmodule AppWeb.TweetLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, :tweets, list_tweets())}
+    if connected?(socket), do: Timeline.subscribe()
+    # {:ok, assign(socket, :tweets, list_tweets())}
+    # {:ok, assign(socket, :tweets, fetch_tweets())}
+    {:ok, assign(socket, :tweets, fetch_tweets()), temporary_assigns: [tweets: []]}
   end
 
   @impl true
@@ -36,11 +39,20 @@ defmodule AppWeb.TweetLive.Index do
   def handle_event("delete", %{"id" => id}, socket) do
     tweet = Timeline.get_tweet!(id)
     {:ok, _} = Timeline.delete_tweet(tweet)
-
-    {:noreply, assign(socket, :tweets, list_tweets())}
+    {:noreply, assign(socket, :tweets, fetch_tweets())}
   end
 
-  defp list_tweets do
+  @impl true
+  def handle_info({:tweet_created, tweet}, socket) do
+    {:noreply, update(socket, :tweets, fn tweets -> [tweet | tweets] end)}
+  end
+
+  def handle_info({:tweet_updated, tweet}, socket) do
+    IO.inspect(tweet, label: "update tweet")
+    {:noreply, update(socket, :tweets, fn tweets -> [tweet | tweets] end)}
+  end
+
+  defp fetch_tweets do
     Timeline.list_tweets()
   end
 end

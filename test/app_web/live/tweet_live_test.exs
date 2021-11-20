@@ -4,9 +4,9 @@ defmodule AppWeb.TweetLiveTest do
   import Phoenix.LiveViewTest
   import App.TimelineFixtures
 
-  @create_attrs %{content: "some content", like_count: 42, repost_count: 42, username: "some username"}
-  @update_attrs %{content: "some updated content", like_count: 43, repost_count: 43, username: "some updated username"}
-  @invalid_attrs %{content: nil, like_count: nil, repost_count: nil, username: nil}
+  @create_attrs %{content: "some content", like_count: 42, retweet_count: 42, username: "some username"}
+  @update_attrs %{content: "some updated content", like_count: 43, retweet_count: 43, username: "some updated username"}
+  @invalid_attrs %{content: nil, like_count: nil, retweet_count: nil, username: nil}
 
   defp create_tweet(_) do
     tweet = tweet_fixture()

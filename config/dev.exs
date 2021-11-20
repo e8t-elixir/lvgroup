@@ -40,7 +40,7 @@ config :app, AppWeb.Endpoint,
     yarn: [
       "sass",
       "-q",
-      "css/custom/index.scss:css/custom.css",
+      "_css/custom/index.scss:css/custom.css",
       "_css/icons.scss:css/icons.css",
       cd: Path.expand("../assets", __DIR__)
     ]
@@ -109,6 +109,8 @@ config :swoosh, :api_client, false
 config :app, AppWeb.Endpoint,
   live_reload: [
     patterns: [
+      ~r"assets/_css",
+      ~r"assets/js",
       ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",
       ~r"priv/gettext/.*(po)$",
       ~r"lib/app_web/(live|views)/.*(ex)$",

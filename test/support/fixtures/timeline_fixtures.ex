@@ -13,7 +13,7 @@ defmodule App.TimelineFixtures do
       |> Enum.into(%{
         content: "some content",
         like_count: 42,
-        repost_count: 42,
+        retweet_count: 42,
         username: "some username"
       })
       |> App.Timeline.create_tweet()

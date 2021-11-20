@@ -11,14 +11,14 @@
     return_to: Routes.tweet_index_path(@socket, :index) %>
 <% end %>
 
+<%= if false do %>
 <table>
   <thead>
     <tr>
       <th>Username</th>
       <th>Content</th>
       <th>Like count</th>
-      <th>Repost count</th>
-
+      <th>Retweet count</th>
       <th></th>
     </tr>
   </thead>
@@ -28,7 +28,7 @@
         <td><%= tweet.username %></td>
         <td><%= tweet.content %></td>
         <td><%= tweet.like_count %></td>
-        <td><%= tweet.repost_count %></td>
+        <td><%= tweet.retweet_count %></td>
 
         <td>
           <span><%= live_redirect "Show", to: Routes.tweet_show_path(@socket, :show, tweet) %></span>
@@ -39,5 +39,12 @@
     <% end %>
   </tbody>
 </table>
+<% end %>
+
+<div id="tweets" phx-update="prepend">
+  <%= for tweet <- @tweets do %>
+    <%= live_component @socket, AppWeb.TweetLive.TweetComponent, id: tweet.id, tweet: tweet %>
+  <% end %>
+</div>
 
 <span><%= live_patch "New Tweet", to: Routes.tweet_index_path(@socket, :new) %></span>
