@@ -34,7 +34,7 @@ config :app, AppWeb.Endpoint,
     yarn: [
       "sass",
       "-q",
-      "css/custom/index.scss:css/custom.css",
+      "_css/custom/index.scss:css/custom.css",
       "_css/icons.scss:css/icons.css",
       cd: Path.expand("../assets", __DIR__)
     ]
