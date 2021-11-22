@@ -33,6 +33,7 @@ defmodule App.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:scrivener_ecto, "~> 2.0"},
       {:postgrex, ">= 0.0.0"},
       {:bcrypt_elixir, "~> 2.0"},
       {:phoenix, "~> 1.6.2"},
